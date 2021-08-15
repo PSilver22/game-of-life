@@ -7,4 +7,4 @@ A simple remake of Conway's Game of Life.
 3. Any living cell with more than three living neighbors dies.
 4. Any dead cell with exactly three living neighbors becomes a live.
 
-#### [Current Working Version](https://psilver22.github.io/game-of-life/)
+#### [Current (almost) Working Version](https://psilver22.github.io/game-of-life/)
