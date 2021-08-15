@@ -13,6 +13,7 @@ class Grid {
 			}
 		}
 		
+		// long ugly way to get all the neighbors of a cell
 		for (let row = 0; row < height; ++row) {
 			for (let column = 0; column < width; ++column) {
 				if ((column - 1) >= 0 && (row - 1) >= 0) {
@@ -50,6 +51,12 @@ class Grid {
 		}
 	}
 
+	/**
+	 * Method for drawing the grid to the screen.
+	 * @param {*} canvasContext The context to the HTML canvas 
+	 * @param {*} top The pixel row of the top of the grid
+	 * @param {*} left The pixel row of the left of the grid
+	 */
 	drawGrid(canvasContext, top, left) {
 		for (let i = 0; i < this.height; ++i) {
 			for (let j = 0; j < this.width; ++j) {
@@ -60,7 +67,7 @@ class Grid {
 					canvasContext.fillStyle = 'gray';
 				}
 
-				canvasContext.fillRect(top + (i * this.cellSize), left + (j * this.cellSize), this.cellSize, this.cellSize);
+				canvasContext.fillRect(top + (i * this.cellSize) + i, left + (j * this.cellSize) + j, this.cellSize, this.cellSize);
 			}
 		}
 	}

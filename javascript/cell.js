@@ -4,6 +4,9 @@ class Cell {
 		this.isLiving = false;
 	}
 
+	/**
+	 * Updates the cell for the next generation based on the rules of the game.
+	 */
 	updateNextGen()
 	{
 		let livingNeighbors = 0;
@@ -21,12 +24,6 @@ class Cell {
 				break;
 			default:
 				this.isLiving = false;
-		}
-	}
-
-	printNeighbors() {
-		for (let neighbor of this.neighbors) {
-			console.log(neighbor);
 		}
 	}
 }
