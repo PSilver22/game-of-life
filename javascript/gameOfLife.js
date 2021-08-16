@@ -13,4 +13,12 @@ grid.initGrid(canvasContext, 0, 0);
 
 
 addEventListener('click', event => {grid.onClick(event, canvasContext)}, false);
-addEventListener('keypress', event => {grid.onKeypress(event)}, false);
+addEventListener('keypress', event => {
+	if (event.key == "2") {
+		document.title = "PAUSED - The Game of Life"
+	}
+	else {
+		document.title = "The Game of Life"
+	}
+	grid.onKeypress(event);
+}, false);
