@@ -5,7 +5,10 @@ canvas.height = window.innerHeight;
 let canvasContext = canvas.getContext('2d')
 
 // get the size of the cells
-let cellSize = parseInt(prompt("How big should the cells be? "));
+let cellSize = 0;
+while (isNaN(cellSize) || cellSize <= 0) {
+	cellSize = parseInt(prompt("How big should the cells be? "));
+}
 
 // setup the grid
 let grid = new Grid(Math.round(canvas.width/cellSize), Math.round(canvas.height/cellSize), cellSize);
@@ -20,5 +23,6 @@ addEventListener('keypress', event => {
 	else {
 		document.title = "The Game of Life"
 	}
+
 	grid.onKeypress(event);
 }, false);

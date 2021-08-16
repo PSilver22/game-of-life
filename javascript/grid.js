@@ -1,13 +1,13 @@
 class Grid {
-
 	static isRunning = false;
-
+	
 	constructor (width, height, cellSize) {
 		this.width = width;
 		this.height = height;
+		this.top = 0;
+		this.left = 0;
 	
 		// create matrix of size height X width of cells
-		this.livingCells = [];
 		this.matrix = new Array(height);
 		for (let row = 0; row < height; ++row) {
 			this.matrix[row] = new Array(width);
@@ -46,6 +46,9 @@ class Grid {
 	 * @param {*} left The pixel row of the left of the grid
 	 */
 	initGrid(canvasContext, top, left) {
+		this.top = top;
+		this.left = left;
+
 		for (let i = 0; i < this.height; ++i) {
 			for (let j = 0; j < this.width; ++j) {
 				this.matrix[i][j].top = top + (i * Cell.cellSize) + i;
@@ -57,48 +60,15 @@ class Grid {
 	}
 
 	/**
-	* Method that does a binary search to find and change the status of the cell.
+	* Method that flips the state of the clicked on cell.
 	* @param {*} event The event object passed from the HTML listener.
 	*/
 	onClick(event, canvasContext) {
-		let l = 0;
-		let r = this.height - 1;
-		let cellRow;
+		let cellIndicies = Cell.getIndexFromPos(event.pageX, event.pageY, this.top, this.left);
+		let cell = this.matrix[cellIndicies[0]][cellIndicies[1]];
 
-		// first binary search to find the row
-		while (l <= r) {
-			let m = Math.round((l + r)/2);
-
-			if (this.matrix[m][0].top <= event.pageY && (this.matrix[m][0].top + Cell.cellSize) >= event.pageY) {
-				cellRow = this.matrix[m];
-				break;
-			}
-			else if (this.matrix[m][0].top >= event.pageY) {
-				r = m - 1;
-			}
-			else {
-				l = m + 1;
-			}
-		}
-
-		// Second binary search to find the column
-		l = 0;
-		r = this.width - 1;
-		while (l <= r) {
-			let m = Math.round((l + r)/2);
-
-			if (cellRow[m].left <= event.pageX && (cellRow[m].left + Cell.cellSize) >= event.pageX) {
-				cellRow[m].toggleLiving();
-				cellRow[m].drawCell(canvasContext);
-				return;
-			}
-			else if (cellRow[m].left >= event.pageX) {
-				r = m - 1;
-			}
-			else {
-				l = m + 1;
-			}
-		}
+		cell.toggleLiving();
+		cell.drawCell(canvasContext);
 	}
 
 	/**
@@ -137,27 +107,27 @@ class Grid {
 	 * @param {*} frameTimeout How much time should there be in between each frame
 	 * @param {*} canvasContext The context of the HTML canvas
 	 */
-	async performSimulation(frameTimeout, canvasContext)
-	{
-		while (Grid.isRunning) {
-			// Find the index of cells that need to be toggled
-			let cellsToToggle = []; 
-			for (let i = 0; i < this.height; ++i) {
-				for(let j = 0; j < this.width; ++j) {
-					let toggleLiving = this.matrix[i][j].getNextGen() != this.matrix[i][j].isLiving;
-					if (toggleLiving) {
-						cellsToToggle.push([i, j]);
-					}
-				}
-			}
-
-			// Toggle cells
-			for (let cellIndex of cellsToToggle) {
-				this.matrix[cellIndex[0]][cellIndex[1]].toggleLiving();
-				this.matrix[cellIndex[0]][cellIndex[1]].drawCell(canvasContext);
-			}
-
-			await new Promise(r => setTimeout(r, frameTimeout));
-		}
-	}
+	 async performSimulation(frameTimeout, canvasContext)
+	 {
+		 while (Grid.isRunning) {
+			 // Find the index of cells that need to be toggled
+			 let cellsToToggle = []; 
+			 for (let i = 0; i < this.height; ++i) {
+				 for(let j = 0; j < this.width; ++j) {
+					 let toggleLiving = this.matrix[i][j].getNextGen() != this.matrix[i][j].isLiving;
+					 if (toggleLiving) {
+						 cellsToToggle.push([i, j]);
+					 }
+				 }
+			 }
+ 
+			 // Toggle cells
+			 for (let cellIndex of cellsToToggle) {
+				 this.matrix[cellIndex[0]][cellIndex[1]].toggleLiving();
+				 this.matrix[cellIndex[0]][cellIndex[1]].drawCell(canvasContext);
+			 }
+ 
+			 await new Promise(r => setTimeout(r, frameTimeout));
+		 }
+	 }
 }

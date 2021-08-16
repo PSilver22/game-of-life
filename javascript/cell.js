@@ -2,10 +2,22 @@ class Cell {
 	static cellSize = 0;
 
 	constructor() {
-		this.neighbors = Array(0);
+		this.neighbors = [];
 		this.isLiving = false;
 		this.top = 0;
 		this.left = 0;
+	}
+
+	/**
+	 * Reverses the process to find 
+	 * @param {*} x X window position on screen
+	 * @param {*} y Y window position on screen
+	 * @param {*} topOfGrid The pixel row of top of the grid
+	 * @param {*} leftOfGrid The pixel column of the left of the grid
+	 * @returns Array of size two with the row, column (in that order) of the pixel at window position x, y
+	 */
+	 static getIndexFromPos(x, y, topOfGrid, leftOfGrid) {
+		return [Math.ceil((y - Cell.cellSize - topOfGrid) / (Cell.cellSize + 1)), Math.ceil((x - Cell.cellSize - leftOfGrid) / (Cell.cellSize + 1))];
 	}
 
 	/**
@@ -46,7 +58,7 @@ class Cell {
 	}
 
 	/**
-	 * Inverts if the cell is living.
+	 * Inverts if the cell is living and remove/add it to livingCells array.
 	 */
 	toggleLiving() {
 		this.isLiving = !this.isLiving
