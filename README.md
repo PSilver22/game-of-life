@@ -6,3 +6,8 @@ A simple remake of Conway's Game of Life.
 2. Any living cell with two or three living neighbors lives.
 3. Any living cell with more than three living neighbors dies.
 4. Any dead cell with exactly three living neighbors becomes a live.
+
+### Controls
+- Click on a cell to toggle it's state
+- Press 1 to start the simulation
+- Press 2 to pause the simulation
