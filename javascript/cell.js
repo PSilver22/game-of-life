@@ -11,10 +11,10 @@ class Cell {
 	/**
 	 * Updates the cell for the next generation based on the rules of the game.
 	 */
-	updateNextGen()
+	getNextGen()
 	{
 		let livingNeighbors = 0;
-		for (let neighbor of neighbors) {
+		for (let neighbor of this.neighbors) {
 			if (neighbor.isLiving) {
 				++livingNeighbors;
 			}
@@ -22,12 +22,13 @@ class Cell {
 		
 		switch (livingNeighbors) {
 			case 3:
-				this.isLiving = true;
+				return true;
 				break;
 			case 2:
+				return this.isLiving;
 				break;
 			default:
-				this.isLiving = false;
+				return false;
 		}
 	}
 
