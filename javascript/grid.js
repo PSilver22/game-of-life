@@ -5,7 +5,9 @@ class Grid {
 	constructor (width, height, cellSize) {
 		this.width = width;
 		this.height = height;
-		// create matrix of size height X width
+	
+		// create matrix of size height X width of cells
+		this.livingCells = [];
 		this.matrix = new Array(height);
 		for (let row = 0; row < height; ++row) {
 			this.matrix[row] = new Array(width);
@@ -16,7 +18,6 @@ class Grid {
 		Cell.cellSize = cellSize;
 		
 		// long ugly way to get all the neighbors of a cell
-		console.log(width + ", " + height)
 		for (let row = 0; row < height; ++row) {
 			for (let column = 0; column < width; ++column) {
 				// get surrounding columns and rows, if the cell is on the border have it link to other border.
@@ -24,8 +25,6 @@ class Grid {
 				let leftColumn = ((column - 1) >= 0) ? (column - 1) : (width - 1);
 				let lowerRow = ((row + 1) < height) ? (row + 1) : 0;
 				let upperRow = ((row - 1) >= 0) ? (row - 1) : (height - 1);
-
-				console.log("\nRow: " + row + "\nColumn: " + column + "\nRight column: " + rightColumn + "\nLeft column: " + leftColumn + "\nLower row: " + lowerRow + "\nUpper row: " + upperRow);
 
 				// Collect all 8 neighboring cells
 				this.matrix[row][column].neighbors.push(this.matrix[upperRow][leftColumn]);
@@ -66,6 +65,7 @@ class Grid {
 		let r = this.height - 1;
 		let cellRow;
 
+		// first binary search to find the row
 		while (l <= r) {
 			let m = Math.round((l + r)/2);
 
@@ -81,6 +81,7 @@ class Grid {
 			}
 		}
 
+		// Second binary search to find the column
 		l = 0;
 		r = this.width - 1;
 		while (l <= r) {
@@ -100,10 +101,47 @@ class Grid {
 		}
 	}
 
-	async performSimulation(timeOut, canvasContext)
+	/**
+	 * Function to change the state of the simulation on keypress.
+	 * @param {*} event Keypress event object
+	 */
+	onKeypress(event) {
+		if (!event.repeat) {
+			switch (event.key) {
+				// Starts the simulation.
+				case "1":
+					if (!Grid.isRunning) {
+						let multiplier = Number(prompt("How fast should the simulation run? (0 - 4] "));
+						if (multiplier > 0 && multiplier <= 4) {
+							let frameTimeout = Math.round(100 / multiplier);
+							Grid.isRunning = true;
+							this.performSimulation(frameTimeout, canvasContext);
+						}
+						else {
+							alert("Illegal multiplier, try again.");
+						}
+					}
+					break;
+	
+				// Stops the simulation
+				case "2":
+					Grid.isRunning = false;
+					break;
+			}
+		}
+	}
+
+	/**
+	 * Updates every cell for the next generation.
+	 * To make sure all cells update correctly this function first checks which cells need to be toggled, then toggles them after.
+	 * @param {*} frameTimeout How much time should there be in between each frame
+	 * @param {*} canvasContext The context of the HTML canvas
+	 */
+	async performSimulation(frameTimeout, canvasContext)
 	{
 		while (Grid.isRunning) {
-			let cellsToToggle = [];
+			// Find the index of cells that need to be toggled
+			let cellsToToggle = []; 
 			for (let i = 0; i < this.height; ++i) {
 				for(let j = 0; j < this.width; ++j) {
 					let toggleLiving = this.matrix[i][j].getNextGen() != this.matrix[i][j].isLiving;
@@ -113,13 +151,13 @@ class Grid {
 				}
 			}
 
-			while (cellsToToggle.length != 0) {
-				let currentCell = cellsToToggle.pop();
-				this.matrix[currentCell[0]][currentCell[1]].toggleLiving();
-				this.matrix[currentCell[0]][currentCell[1]].drawCell(canvasContext);
+			// Toggle cells
+			for (let cellIndex of cellsToToggle) {
+				this.matrix[cellIndex[0]][cellIndex[1]].toggleLiving();
+				this.matrix[cellIndex[0]][cellIndex[1]].drawCell(canvasContext);
 			}
 
-			await new Promise(r => setTimeout(r, timeOut));
+			await new Promise(r => setTimeout(r, frameTimeout));
 		}
 	}
 }

@@ -23,15 +23,17 @@ class Cell {
 		switch (livingNeighbors) {
 			case 3:
 				return true;
-				break;
 			case 2:
 				return this.isLiving;
-				break;
 			default:
 				return false;
 		}
 	}
 
+	/**
+	 * Draws the cell
+	 * @param {*} canvasContext The context of the HTML canvas.
+	 */
 	drawCell(canvasContext) {
 		if (this.isLiving) {
 			canvasContext.fillStyle = 'white';
@@ -43,6 +45,9 @@ class Cell {
 		canvasContext.fillRect(this.left, this.top, Cell.cellSize, Cell.cellSize);
 	}
 
+	/**
+	 * Inverts if the cell is living.
+	 */
 	toggleLiving() {
 		this.isLiving = !this.isLiving
 	}

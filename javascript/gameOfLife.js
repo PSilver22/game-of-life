@@ -13,14 +13,4 @@ grid.initGrid(canvasContext, 0, 0);
 
 
 addEventListener('click', event => {grid.onClick(event, canvasContext)}, false);
-addEventListener('keypress', event => {
-	if (!event.repeat) {
-		switch (event.key) {
-			case "p":
-				let gameSpeed = 1000 * parseInt(prompt("How fast should the simulation run? (0 - 2) "));
-				Grid.isRunning = true;
-				grid.performSimulation(gameSpeed, canvasContext);
-				break;
-		}
-	}
-})
+addEventListener('keypress', event => {grid.onKeypress(event)}, false);
