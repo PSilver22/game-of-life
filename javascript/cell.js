@@ -15,8 +15,8 @@ class Cell {
 	 * @param {*} topOfGrid The pixel row of top of the grid
 	 * @param {*} leftOfGrid The pixel column of the left of the grid
 	 * @returns Array of size two with the row, column (in that order) of the pixel at window position x, y
-	 */
-	 static getIndexFromPos(x, y, topOfGrid, leftOfGrid) {
+	*/
+	static getIndexFromPos(x, y, topOfGrid, leftOfGrid) {
 		return [Math.ceil((y - Cell.cellSize - topOfGrid) / (Cell.cellSize + 1)), Math.ceil((x - Cell.cellSize - leftOfGrid) / (Cell.cellSize + 1))];
 	}
 

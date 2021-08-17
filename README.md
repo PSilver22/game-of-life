@@ -11,3 +11,4 @@ A simple remake of Conway's Game of Life.
 - Click on a cell to toggle it's state
 - Press 1 to start the simulation
 - Press 2 to pause the simulation
+- Press 3 to update the simulation a single frame

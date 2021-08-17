@@ -97,6 +97,11 @@ class Grid {
 				case "2":
 					Grid.isRunning = false;
 					break;
+
+				// Update the simulation a single frame
+				case "3":
+					this.updateSingleFrame(canvasContext);
+					break;
 			}
 		}
 	}
@@ -107,27 +112,50 @@ class Grid {
 	 * @param {*} frameTimeout How much time should there be in between each frame
 	 * @param {*} canvasContext The context of the HTML canvas
 	 */
-	 async performSimulation(frameTimeout, canvasContext)
-	 {
-		 while (Grid.isRunning) {
-			 // Find the index of cells that need to be toggled
-			 let cellsToToggle = []; 
-			 for (let i = 0; i < this.height; ++i) {
-				 for(let j = 0; j < this.width; ++j) {
-					 let toggleLiving = this.matrix[i][j].getNextGen() != this.matrix[i][j].isLiving;
-					 if (toggleLiving) {
-						 cellsToToggle.push([i, j]);
-					 }
-				 }
-			 }
+	async performSimulation(frameTimeout, canvasContext)
+	{
+		while (Grid.isRunning) {
+			// Find the index of cells that need to be toggled
+			let cellsToToggle = []; 
+			for (let i = 0; i < this.height; ++i) {
+				for(let j = 0; j < this.width; ++j) {
+					let toggleLiving = this.matrix[i][j].getNextGen() != this.matrix[i][j].isLiving;
+					if (toggleLiving) {
+						cellsToToggle.push([i, j]);
+					}
+				}
+			}
  
-			 // Toggle cells
-			 for (let cellIndex of cellsToToggle) {
-				 this.matrix[cellIndex[0]][cellIndex[1]].toggleLiving();
-				 this.matrix[cellIndex[0]][cellIndex[1]].drawCell(canvasContext);
-			 }
- 
-			 await new Promise(r => setTimeout(r, frameTimeout));
-		 }
-	 }
+			// Toggle cells
+			for (let cellIndex of cellsToToggle) {
+				this.matrix[cellIndex[0]][cellIndex[1]].toggleLiving();
+				this.matrix[cellIndex[0]][cellIndex[1]].drawCell(canvasContext);
+			}
+
+			await new Promise(r => setTimeout(r, frameTimeout));
+		}
+	}
+
+	/**
+	 * Update the simulation for a single frame
+	 * @param {*} canvasContext The context of the HTML canvas.
+	 */
+	updateSingleFrame(canvasContext) {
+		// Get which cells need to be toggled
+		let cellsToToggle = []; 
+		for (let i = 0; i < this.height; ++i) {
+			for(let j = 0; j < this.width; ++j) {
+				let toggleLiving = this.matrix[i][j].getNextGen() != this.matrix[i][j].isLiving;
+				if (toggleLiving) {
+					cellsToToggle.push([i, j]);
+				}
+			}
+		}
+
+		// Toggle cells
+		for (let cellIndex of cellsToToggle) {
+			this.matrix[cellIndex[0]][cellIndex[1]].toggleLiving();
+			this.matrix[cellIndex[0]][cellIndex[1]].drawCell(canvasContext);
+		}
+	}
 }
