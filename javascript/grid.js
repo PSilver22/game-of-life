@@ -112,27 +112,10 @@ class Grid {
 	 * @param {*} frameTimeout How much time should there be in between each frame
 	 * @param {*} canvasContext The context of the HTML canvas
 	 */
-	async performSimulation(frameTimeout, canvasContext)
-	{
+	async performSimulation(frameTimeout, canvasContext) {
 		while (Grid.isRunning) {
-			// Find the index of cells that need to be toggled
-			let cellsToToggle = []; 
-			for (let i = 0; i < this.height; ++i) {
-				for(let j = 0; j < this.width; ++j) {
-					let toggleLiving = this.matrix[i][j].getNextGen() != this.matrix[i][j].isLiving;
-					if (toggleLiving) {
-						cellsToToggle.push([i, j]);
-					}
-				}
-			}
- 
-			// Toggle cells
-			for (let cellIndex of cellsToToggle) {
-				this.matrix[cellIndex[0]][cellIndex[1]].toggleLiving();
-				this.matrix[cellIndex[0]][cellIndex[1]].drawCell(canvasContext);
-			}
-
-			await new Promise(r => setTimeout(r, frameTimeout));
+			this.updateSingleFrame(canvasContext)
+			await new Promise(r => setTimeout(r, frameTimeout));	
 		}
 	}
 
